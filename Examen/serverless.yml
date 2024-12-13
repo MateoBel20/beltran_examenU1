@@ -1,0 +1,62 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: espe202451
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: gestionlibros
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: beltranExamenU1
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - arn:aws:dynamodb:us-east-1:692859937629:table/BooksTable
+
+functions:
+  hello:
+    handler: src/handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+  createBook:
+    handler: src/addLibro.addLibro
+    events:
+      - httpApi:
+          path: /libros
+          method: post
+  getBook:
+    handler: src/getLibro.getLibro
+    events:
+      - httpApi:
+          path: /libros/{msbb_examen_u1}
+          method: get
+  updateBook:
+    handler: src/updateBook.updateBook
+    events:
+      - httpApi:
+          path: /libros/{msbb_examen_u1}
+          method: put
+  deleteBook:
+    handler: src/deleteBook.deleteBook
+    events:
+      - httpApi:
+          path: /libros/{msbb_examen_u1}
+          method: delete
+
+resources:
+  Resources:
+    TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: BooksTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: msbb_examen_u1
+            AttributeType: S
+        KeySchema:
+          - AttributeName: msbb_examen_u1
+            KeyType: HASH
